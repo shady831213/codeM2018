@@ -134,8 +134,6 @@ func (h edgesHeap) Less(i, j int) bool { return h[i][2] < h[j][2] }
 func (h edgesHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 
 func (h *edgesHeap) Push(x interface{}) {
-	// Push and Pop use pointer receivers because they modify the slice's length,
-	// not just its contents.
 	*h = append(*h, x.([]int))
 }
 
@@ -196,7 +194,6 @@ func (g *graph) bfs() bool {
 		g.yLevel[i] = 0
 	}
 	pf, pe := 0, 0
-	//use queue
 
 	for x := 1; x < g.n+1; x++ {
 		if g.xMatch[x] == 0 && len(g.x[x]) != 0 {
@@ -224,13 +221,11 @@ func (g *graph) bfs() bool {
 			}
 		}
 	}
-	//fmt.Println(g.dis, g.xLevel, g.yLevel, g.xMatch, g.yMatch)
 	return g.dis != math.MaxInt32
 }
 
 func (g *graph) dfs(x int) bool {
 	for _, y := range g.x[x] {
-		//fmt.Println(x, y, yVisit, g.yLevel[y], g.xLevel[x], g.xMatch, g.yMatch)
 		if !g.yVisit[y] && g.yLevel[y] == g.xLevel[x]+1 {
 			g.yVisit[y] = true
 			if g.yMatch[y] != 0 && g.yLevel[y] == g.dis {
@@ -256,40 +251,7 @@ func (g *graph) maxMatch() {
 				if g.dfs(x) {
 					g.matches++
 				}
-				//fmt.Println(matches, k, x, g.xMatch, g.yMatch, yVisit, g.yLevel, g.xLevel)
-				//fmt.Println(g.x)
-				//if g.matches >= k {
-				//	return
-				//}
 			}
 		}
 	}
 }
-
-//func (g *graph) dfs1(x int) bool {
-//	for _, y := range g.x[x] {
-//		//fmt.Println(x, y, yVisit, g.yLevel[y], g.xLevel[x], g.xMatch, g.yMatch)
-//		if !g.yVisit[y] {
-//			g.yVisit[y] = true
-//			if g.yMatch[y] == 0 || g.dfs1(g.yMatch[y]) {
-//				g.xMatch[x] = y
-//				g.yMatch[y] = x
-//				return true
-//			}
-//		}
-//	}
-//	return false
-//}
-//
-//func (g *graph) maxMatch1() {
-//	for x := 1; x < g.n+1; x++ {
-//		for i := range g.yVisit {
-//			g.yVisit[i] = false
-//		}
-//		if g.xMatch[x] == 0 && len(g.x[x]) != 0 {
-//			if g.dfs1(x) {
-//				g.matches++
-//			}
-//		}
-//	}
-//}
