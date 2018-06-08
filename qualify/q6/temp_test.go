@@ -78,7 +78,7 @@ func TestTemp4(t *testing.T) {
 
 //output 0 3 -1
 func TestTemp5(t *testing.T) {
-	subproc := exec.Command("./temp")
+	subproc := exec.Command("./q6")
 	stdin, _ := subproc.StdinPipe()
 	stdout, _ := subproc.StdoutPipe()
 	defer stdin.Close()
@@ -107,7 +107,7 @@ func TestTemp5(t *testing.T) {
 
 //output 0 -1...-1
 func TestTemp6(t *testing.T) {
-	subproc := exec.Command("./temp")
+	subproc := exec.Command("./q6")
 	stdin, _ := subproc.StdinPipe()
 	stdout, _ := subproc.StdoutPipe()
 	defer stdin.Close()
@@ -115,7 +115,7 @@ func TestTemp6(t *testing.T) {
 	m := 100000
 	edges := make([][]int, m)
 	for i := range edges {
-		s := (i + 1) % n
+		s := i % n + 1
 		t := 1
 		c := i
 		edges[i] = []int{s, t, c}
@@ -138,17 +138,32 @@ func TestTemp6(t *testing.T) {
 	fmt.Println(s)
 }
 
-//output 0 1 2...998 -1
+//output 0 1 2...998 999
 func TestTemp7(t *testing.T) {
 	n := 1000
 	m := 100000
 	edges := make([][]int, m)
 	for i := range edges {
-		s := (i + 1) % n
-		t := n - (i+1)%n
+		s := i % n + 1
+		t := n - i % n
 		c := i
 		edges[i] = []int{s, t, c}
 	}
+	temp(n, edges)
+}
+
+//output 0 999 1999...99999 -1...-1
+func TestTemp8(t *testing.T) {
+	n := 1000
+	m := 100000
+	edges := make([][]int, m)
+	for i := range edges {
+		s := (i+1)/n + 1
+		t := i % n + 1
+		c := i
+		edges[i] = []int{s, t, c}
+	}
+	//fmt.Println(edges)
 	temp(n, edges)
 }
 
@@ -195,39 +210,39 @@ func TestTempRand1(t *testing.T) {
 	t.Log(seed)
 }
 
-//func TestTempRand2(t *testing.T) {
-//	seed := time.Now().UnixNano()
-//	r := rand.New(rand.NewSource(seed))
-//	n := r.Intn(1000) + 1
-//	m := r.Intn(100000) + 1
-//	edges := make([][]int, m)
-//	for i := range edges {
-//		s := r.Intn(n) + 1
-//		t := r.Intn(n) + 1
-//		c := r.Intn(1000000000)
-//		edges[i] = []int{s, t, c}
-//	}
-//	temp(n, edges)
-//	t.Log("n", n)
-//	t.Log(seed)
-//}
+func TestTempRand2(t *testing.T) {
+	seed := time.Now().UnixNano()
+	r := rand.New(rand.NewSource(seed))
+	n := r.Intn(1000) + 1
+	m := r.Intn(100000) + 1
+	edges := make([][]int, m)
+	for i := range edges {
+		s := r.Intn(n) + 1
+		t := r.Intn(n) + 1
+		c := r.Intn(1000000000)
+		edges[i] = []int{s, t, c}
+	}
+	temp(n, edges)
+	t.Log("n", n)
+	t.Log(seed)
+}
 
-//func TestTempRand3(t *testing.T) {
-//	seed := time.Now().UnixNano()
-//	r := rand.New(rand.NewSource(seed))
-//	n := 1000
-//	m := 100000
-//	edges := make([][]int, m)
-//	for i := range edges {
-//		s := r.Intn(999) + 1
-//		t := r.Intn(999) + 1
-//		c := r.Intn(1000000000)
-//		edges[i] = []int{s, t, c}
-//	}
-//	temp(n, edges)
-//	t.Log("n", n)
-//	t.Log(seed)
-//}
+func TestTempRand3(t *testing.T) {
+	seed := time.Now().UnixNano()
+	r := rand.New(rand.NewSource(seed))
+	n := 1000
+	m := 100000
+	edges := make([][]int, m)
+	for i := range edges {
+		s := r.Intn(999) + 1
+		t := r.Intn(999) + 1
+		c := r.Intn(1000000000)
+		edges[i] = []int{s, t, c}
+	}
+	temp(n, edges)
+	t.Log("n", n)
+	t.Log(seed)
+}
 
 func BenchmarkTemp(b *testing.B) {
 	seed := time.Now().UnixNano()
@@ -264,7 +279,7 @@ func BenchmarkMain(b *testing.B) {
 			edges[i] = []int{s, t, c}
 		}
 		b.StartTimer()
-		subproc := exec.Command("./temp")
+		subproc := exec.Command("./q6")
 		stdin, _ := subproc.StdinPipe()
 		defer stdin.Close()
 		subproc.Start()
